@@ -1,0 +1,76 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: #f0f2f5;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: #1a1a1a;
+  margin-bottom: 2rem;
+}
+
+.game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.status {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.board {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.board-row {
+  display: flex;
+}
+
+.square {
+  width: 80px;
+  height: 80px;
+  border: 2px solid #e0e0e0;
+  background: #ffffff;
+  font-size: 2.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 4px;
+  transition: all 0.2s;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.square:hover {
+  background: #f8f9fa;
+  transform: scale(1.05);
+}
+
+.reset-button {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.reset-button:hover {
+  background-color: #2980b9;
+} 
