@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 
 type SquareValue = 'X' | 'O' | null;
+type GameMode = 'single' | 'multi' | null;
 
 const calculateWinner = (squares: SquareValue[]): SquareValue => {
   const lines = [
@@ -23,6 +24,62 @@ const calculateWinner = (squares: SquareValue[]): SquareValue => {
   return null;
 };
 
+// AI move calculation using minimax algorithm
+const minimax = (
+  squares: SquareValue[],
+  depth: number,
+  isMaximizing: boolean
+): number => {
+  const winner = calculateWinner(squares);
+  
+  if (winner === 'O') return 10 - depth;
+  if (winner === 'X') return depth - 10;
+  if (squares.every(square => square !== null)) return 0;
+
+  if (isMaximizing) {
+    let bestScore = -Infinity;
+    for (let i = 0; i < squares.length; i++) {
+      if (!squares[i]) {
+        squares[i] = 'O';
+        const score = minimax(squares, depth + 1, false);
+        squares[i] = null;
+        bestScore = Math.max(score, bestScore);
+      }
+    }
+    return bestScore;
+  } else {
+    let bestScore = Infinity;
+    for (let i = 0; i < squares.length; i++) {
+      if (!squares[i]) {
+        squares[i] = 'X';
+        const score = minimax(squares, depth + 1, true);
+        squares[i] = null;
+        bestScore = Math.min(score, bestScore);
+      }
+    }
+    return bestScore;
+  }
+};
+
+const findBestMove = (squares: SquareValue[]): number => {
+  let bestScore = -Infinity;
+  let bestMove = -1;
+
+  for (let i = 0; i < squares.length; i++) {
+    if (!squares[i]) {
+      squares[i] = 'O';
+      const score = minimax(squares, 0, false);
+      squares[i] = null;
+      if (score > bestScore) {
+        bestScore = score;
+        bestMove = i;
+      }
+    }
+  }
+
+  return bestMove;
+};
+
 const Square = ({ 
   value, 
   onClick 
@@ -35,12 +92,28 @@ const Square = ({
   </button>
 );
 
-const Board = () => {
+const Board = ({ gameMode }: { gameMode: GameMode }) => {
   const [squares, setSquares] = useState<SquareValue[]>(Array(9).fill(null));
   const [xIsNext, setXIsNext] = useState(true);
 
+  useEffect(() => {
+    if (gameMode === 'single' && !xIsNext && !calculateWinner(squares)) {
+      const timer = setTimeout(() => {
+        const bestMove = findBestMove(squares.slice());
+        if (bestMove !== -1) {
+          const newSquares = squares.slice();
+          newSquares[bestMove] = 'O';
+          setSquares(newSquares);
+          setXIsNext(true);
+        }
+      }, 500); // Add a small delay to make it feel more natural
+
+      return () => clearTimeout(timer);
+    }
+  }, [squares, xIsNext, gameMode]);
+
   const handleClick = (i: number) => {
-    if (calculateWinner(squares) || squares[i]) {
+    if (calculateWinner(squares) || squares[i] || (gameMode === 'single' && !xIsNext)) {
       return;
     }
 
@@ -95,10 +168,31 @@ const Board = () => {
 };
 
 function App() {
+  const [gameMode, setGameMode] = useState<GameMode>(null);
+
   return (
     <div className="app">
       <h1>Tic Tac Toe</h1>
-      <Board />
+      <div className="mode-selection">
+        <button 
+          className={`mode-button ${gameMode === 'single' ? 'active' : ''}`}
+          onClick={() => setGameMode('single')}
+        >
+          Single Player
+        </button>
+        <button 
+          className={`mode-button ${gameMode === 'multi' ? 'active' : ''}`}
+          onClick={() => setGameMode('multi')}
+        >
+          Multi Player
+        </button>
+      </div>
+      {gameMode && <Board gameMode={gameMode} />}
+      {!gameMode && (
+        <div className="select-mode-message">
+          Please select a game mode to start playing
+        </div>
+      )}
     </div>
   );
 }

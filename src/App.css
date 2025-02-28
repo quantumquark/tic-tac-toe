@@ -13,6 +13,39 @@ h1 {
   margin-bottom: 2rem;
 }
 
+.mode-selection {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.mode-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  background-color: #e0e0e0;
+  color: #2c3e50;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mode-button:hover {
+  background-color: #d0d0d0;
+  transform: translateY(-2px);
+}
+
+.mode-button.active {
+  background-color: #3498db;
+  color: white;
+}
+
+.select-mode-message {
+  font-size: 1.2rem;
+  color: #666;
+  margin: 2rem 0;
+}
+
 .game {
   display: flex;
   flex-direction: column;
